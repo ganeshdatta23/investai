@@ -46,6 +46,7 @@ email:                               # daily summary emails (password is in .env
     - ganeshdattapadamata@gmail.com
     - harshapadamata11@gmail.com
     - giridharpadamata@gmail.com
+    - lokeshvarma682@gmail.com
 
 paths:
   db: state/paper.db                 # paper ledger — git-tracked so the deploy persists
