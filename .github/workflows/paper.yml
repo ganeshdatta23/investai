@@ -46,8 +46,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add state docs
           if git diff --cached --quiet; then
-            echo "no changes to commit"
-          else
-            git commit -m "paper run $(date -u +%Y-%m-%d)"
-            git push
+            echo "no changes to commit"; exit 0
           fi
+          git commit -m "paper run $(date -u +%Y-%m-%d)"
+          # The email already went out in the previous step; persisting state is
+          # best-effort. Rebase onto any remote changes and retry to dodge races.
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash origin main && git push; then
+              echo "state persisted"; exit 0
+            fi
+            echo "push attempt $attempt raced with remote; retrying..."; sleep 5
+          done
+          echo "could not persist state this run (email was still sent); next run catches up"
