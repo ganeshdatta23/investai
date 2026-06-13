@@ -173,6 +173,18 @@ def cmd_dashboard(args) -> int:
     report = run_report(cfg)
     out = generate(cfg, result, report, Path(args.out))
     print(f"dashboard written: {out}  (status={result.get('status')})")
+    if args.email:
+        from . import notify
+        if notify.is_configured(cfg):
+            try:
+                subj, html, text = notify.build_summary(cfg, result, report)
+                info = notify.send(cfg, subj, html, text, attachment=out)
+                print(f"email sent to {len(info['sent_to'])} recipient(s)")
+            except Exception as e:  # noqa: BLE001 - never fail the run on email trouble
+                print(f"[email] send failed: {type(e).__name__}: {e}", file=sys.stderr)
+        else:
+            print("[email] not configured (need email.enabled + EMAIL_FROM + "
+                  "EMAIL_APP_PASSWORD + email.to)", file=sys.stderr)
     return 0 if result.get("status") != "data_unavailable" else 1
 
 
@@ -223,6 +235,7 @@ def build_parser() -> argparse.ArgumentParser:
     db.add_argument("--offline", action="store_true", help="synthetic data (no network)")
     db.add_argument("--seed", help="comma-separated symbols")
     db.add_argument("--out", default="docs", help="output dir for index.html (default: docs)")
+    db.add_argument("--email", action="store_true", help="email the summary to configured recipients")
     db.set_defaults(func=cmd_dashboard)
 
     b = sub.add_parser("backtest", help="historical backtest (reuses live decision logic)")

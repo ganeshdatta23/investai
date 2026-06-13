@@ -39,6 +39,14 @@ reasoning:
     model: claude-opus-4-8
     max_candidates: 20
 
+email:                               # daily summary emails (password is in .env, NOT here)
+  enabled: true
+  from: padamataganeshdatta@gmail.com   # sender account that owns the Gmail app password
+  to:
+    - ganeshdattapadamata@gmail.com
+    - harshapadamata11@gmail.com
+    - giridharpadamata@gmail.com
+
 paths:
   db: state/paper.db                 # paper ledger — git-tracked so the deploy persists
   instruments_cache: data/instruments_nse.json

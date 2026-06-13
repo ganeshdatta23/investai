@@ -29,8 +29,11 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
-      - name: Run paper engine + render dashboard
-        run: python -m investai dashboard --out docs || true   # never fail the deploy on a flaky feed
+      - name: Run paper engine + render dashboard + email summary
+        env:
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+        run: python -m investai dashboard --out docs --email || true   # never fail the deploy on a flaky feed/email
 
       - name: Publish research docs alongside the dashboard
         run: |
