@@ -1,0 +1,7 @@
+pandas>=2.2
+numpy>=1.26
+requests>=2.31
+PyYAML>=6.0
+pytest>=8.0
+# Optional, only if reasoning.engine = anthropic:
+# anthropic>=0.40

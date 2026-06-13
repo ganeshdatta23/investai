@@ -1,0 +1,71 @@
+# InvestAI — paper-trading / research engine configuration
+# Live trading is refused unless mode: LIVE AND live_mode: true AND validation gates pass.
+
+mode: PAPER            # PAPER | RESEARCH | LIVE
+live_mode: false
+
+account:
+  equity: 100000.0     # account equity (INR) used for position sizing
+  currency: INR
+
+risk:                  # HARD-CODED RISK POLICY (the engine enforces these)
+  max_risk_per_trade_pct: 1.0
+  max_daily_loss_pct: 3.0
+  max_portfolio_risk_pct: 5.0
+  min_reward_risk: 2.0
+  max_open_positions: 8
+  max_correlated_positions: 3    # max open positions sharing a sector
+
+data:
+  provider: upstox
+  exchange: NSE_EQ
+  candle_interval: day           # day | 30minute | 1minute
+  history_days: 400              # calendar days; ~275 trading bars so EMA200 is defined
+  instruments_cache_hours: 24
+
+scanner:
+  top_n: 20                      # candidates handed to the reasoning layer
+  min_avg_volume: 100000         # min 20-day avg volume (shares) — liquidity floor
+  min_price: 20.0                # skip penny stocks
+  max_price: 1000000.0
+
+execution:                       # expectancy must survive these
+  fee_pct: 0.03                  # approx round-trip brokerage + charges (%)
+  slippage_pct: 0.05             # assumed slippage per side (%)
+
+reasoning:
+  engine: rule                   # rule | anthropic
+  anthropic:
+    model: claude-opus-4-8
+    max_candidates: 20
+
+paths:
+  db: state/paper.db                 # paper ledger — git-tracked so the deploy persists
+  instruments_cache: data/instruments_nse.json
+  token_store: data/.token.json
+  log_dir: data/logs
+
+universe:
+  # Empty seed -> scanner uses the full NSE equity list from the instruments master.
+  # A seed list keeps the first runs fast and cheap.
+  seed:
+    - RELIANCE
+    - TCS
+    - HDFCBANK
+    - INFY
+    - ICICIBANK
+    - SBIN
+    - BHARTIARTL
+    - ITC
+    - LT
+    - HINDUNILVR
+    - AXISBANK
+    - KOTAKBANK
+    - BAJFINANCE
+    - MARUTI
+    - SUNPHARMA
+    - TITAN
+    - WIPRO
+    - ONGC
+    - TATAMOTORS
+    - ADANIENT

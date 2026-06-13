@@ -1,0 +1,15 @@
+# envs
+.venv/
+.conda/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# secrets
+.env
+
+# research data + caches + secrets + logs (NOT committed; prices.db is ~1GB)
+data/
+
+# NOTE: state/ (paper ledger) and docs/ (dashboard) ARE tracked so the deploy persists.
+docs/state.json
