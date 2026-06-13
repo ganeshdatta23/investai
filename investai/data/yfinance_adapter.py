@@ -135,6 +135,8 @@ def chart_to_frame(data: dict | None) -> pd.DataFrame:
     """Parse a Yahoo chart payload into an ascending OHLCV frame. Never fabricates:
     on any malformed/empty payload it returns an empty frame."""
     empty = pd.DataFrame(columns=["open", "high", "low", "close", "volume"]).astype(float)
+    if not data:
+        return empty
     try:
         res = data["chart"]["result"][0]
     except (TypeError, KeyError, IndexError):

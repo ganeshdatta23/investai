@@ -40,8 +40,8 @@ def cmd_auth(args) -> int:
         return 0
     code = args.code
     if args.url:
-        qs = parse_qs(urlparse(args.url).query)
-        code = (qs.get("code") or [None])[0]
+        vals = parse_qs(urlparse(args.url).query).get("code") or []
+        code = vals[0] if vals else None
     if not code:
         print("Could not find ?code= in the provided URL.", file=sys.stderr)
         return 2

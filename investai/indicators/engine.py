@@ -9,6 +9,8 @@ guessed value — the engine never fabricates numbers.
 """
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 import pandas as pd
 
@@ -108,13 +110,13 @@ class IndicatorEngine:
         self.atr_period = atr_period
         self.adx_period = adx_period
 
-    def features(self, df: pd.DataFrame) -> dict[str, float | bool | None]:
+    def features(self, df: pd.DataFrame) -> dict[str, Any]:
         return compute_features(df, self.rsi_period, self.atr_period, self.adx_period)
 
 
 def compute_features(
     df: pd.DataFrame, rsi_period: int = 14, atr_period: int = 14, adx_period: int = 14
-) -> dict[str, float | bool | None]:
+) -> dict[str, Any]:
     """Return a flat dict of the latest indicator values + market-structure flags.
 
     Requires columns open/high/low/close/volume. Insufficient history yields None

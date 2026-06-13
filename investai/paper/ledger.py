@@ -106,8 +106,8 @@ class PaperLedger:
                     reason, exit_price = "stop", row["stop_loss"]
                 elif row["target_1"] is not None and price <= row["target_1"]:
                     reason, exit_price = "target1", row["target_1"]
-            if reason:
-                closed.append(self.close_trade(row["id"], exit_price, reason))
+            if reason and exit_price is not None:
+                closed.append(self.close_trade(row["id"], float(exit_price), reason))
         return closed
 
     def close_trade(self, trade_id: int, exit_price: float, reason: str) -> dict:
